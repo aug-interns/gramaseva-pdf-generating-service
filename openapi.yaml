@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Gramaseva - Certificate Generation Service
+  description: >-
+    This service automatically generates a PDF of a Gramasevaka Certificate based on the given data
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Choreo
+  url: https://choreo.dev
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: pdfs
+    description: PDF Generating API
+paths:
+  /pdf/generate/{id}:
+    summary: Generate PDF by template ID
+    post:
+      tags:
+        - pdfs
+      summary: Generate PDF by template ID
+      description: Generate a PDF of a certificate by giving the certificate ID
+      operationId: GeneratePDFById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the template
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request"
+
+components:
+  schemas:
+    Request:
+      type: object
+      properties:
+        fullname:
+          type: string
+          example: "Indrajith Madhumal Weerasinghe"

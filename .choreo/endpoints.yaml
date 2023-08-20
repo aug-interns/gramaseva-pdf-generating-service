@@ -1,0 +1,6 @@
+version: 0.1
+endpoints:
+- name: Certificate Generating Service 9090
+  port: 9090
+  type: REST
+  schemaFilePath: openapi.yaml
