@@ -1,7 +1,7 @@
 {
-  "name": "jobscout-cv-service",
+  "name": "pdf-generation-service",
   "version": "1.0.0",
-  "description": "Generate CV based on User Details",
+  "description": "Generate PDF Certificates",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
