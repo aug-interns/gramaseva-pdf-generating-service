@@ -1,22 +1,34 @@
-FROM node:18-alpine
+# Filename: Dockerfile
 
-# Create app directory
+FROM node:slim
+
+# We don't need the standalone Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+# Install Google Chrome Stable and fonts
+# Note: this installs the necessary libs to make the browser work with Puppeteer.
+RUN apt-get update && apt-get install gnupg wget -y && \
+    wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install google-chrome-stable -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+# FROM public.ecr.aws/lambda/nodejs:14.2022.09.09.11
+# Create working directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+# Copy package.json
+COPY package.json ./
 
+# Install NPM dependencies for function
 RUN npm install
 
-# Bundle app source
+# Copy handler function and tsconfig
 COPY . .
 
-# Create a new user with UID 10014
-RUN addgroup -g 10014 choreo && \
-    adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
-# Set a non-root user
-USER 10014
+# Expose app
+EXPOSE 8080
 
-CMD [ "npm", "start" ]
+# Run app
+CMD ["node", "app.js"]
